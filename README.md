@@ -1,12 +1,49 @@
-# React + Vite
+## Features
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- Main list with multiple payment methods  
+- Main-lists like UPI, Cards, EMI, Netbanking, COD, Gift Cards  
+- Sub-lists-|- upi -> G-pay,PhonePe,PayPal,Paytm,BHIM
+            |-Credit/Debit Card-> Visa ,Master card,American Express,Rupay Card
+            |-Net Banking->hdfc,pnb,sbi,bob,union,axis,other
 
-Currently, two official plugins are available:
+- Required Input Field according to Opytion Selected
+- Validated input forms:
+  - Card: 16-digit card number, future MM/YY expiry, holder name, CVV (3‑4 digits)
+  - OTP flow with timer, Terms & Conditions checkbox (Pay Later, COD, Card, EMI)
+  - EMI: pick a plan, Aadhaar + OTP input
+  - UPI: UPI ID + QR code + Verify link
+  - Gift Card: code + verify action
+  - Netbanking: bank login or "Other Bank" with IFSC lookup
+- Animated UI via Framer Motion
+- Fully responsive layout
+- Styled using Tailwind CSS
+- Accessible forms & semantic HTML
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **React** (hooks + functional components)  
+- **Vite** – fast dev server and build tool  
+- **Framer Motion** – for smooth animations and card flips  
+- **Tailwind CSS** – utility-first styling  
+- **JavaScript** – validation and logic  
+- No backend—everything is mocked for UI demo
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16+ recommended)
+- npm 
+
+### Installation
+
+Clone the repo:
+
+```bash
+git clone https://github.com/MrBobbydayal/PaymentMethods.git
+cd PaymentMethods
+npm install

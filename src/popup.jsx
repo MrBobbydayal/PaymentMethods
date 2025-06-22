@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import qr from "./assets/qr.png";
+import { isValidCardNumber, isValidExpiry, isValidCVV } from "./utils/utils.js";
 
 
 import axis from './assets/axis.png'
@@ -12,6 +13,29 @@ import sbi from './assets/sbi.png'
 
 
 export default function Modal({ onClose, id }) {
+
+ const [num, setNum] = useState("");
+  const [exp, setExp] = useState("");
+  const [holder, setHolder] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const checkErrors = () => {
+    const errs = {};
+    if (!isValidCardNumber(num)) errs.num = "Card number must be 16 digits.";
+    if (!isValidExpiry(exp)) errs.exp = "Enter valid future MM/YY.";
+    if (!holder.trim()) errs.holder = "Cardholder name is required.";
+    const isAmex = num.replace(/\D/g, "").startsWith("3");
+    if (!isValidCVV(cvv, isAmex)) errs.cvv = `CVV must be ${isAmex ? 4 : 3} digits.`;
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+
+
+
+
+
   const [selectedEmiOption, setSelectedEmiOption] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -112,52 +136,74 @@ export default function Modal({ onClose, id }) {
       );
     }
     if (id.startsWith("card-")) {
-      return (
-        <div className="space-y-3">
-          <input type="text" placeholder="Card Number" className="w-full px-4 py-2 border rounded-md shadow-xl  hover:shadow-black hover:border-blue-800" required />
-          <input type="text" placeholder="Expiry Date (MM/YY)" className="w-full px-4 py-2 border rounded-md shadow-xl  hover:shadow-black hover:border-blue-800" required />
-          <input type="text" placeholder="Cardholder Name" className="w-full px-4 py-2 border rounded-md shadow-xl  hover:shadow-black hover:border-blue-800" required />
-          <input type="text" placeholder="CVV" className="w-full px-4 py-2 border rounded-md shadow-xl hover:shadow-black hover:border-blue-800" required />
-          
+         return (
+    <div className="space-y-3">
+      {/* Card Number */}
+      <input
+        type="text"
+        maxLength={19}
+        placeholder="1234 5678 9012 3456"
+        value={num}
+        onChange={e => {
+          const digits = e.target.value.replace(/\D/g, "").slice(0, 16);
+          setNum(digits.match(/.{1,4}/g)?.join(" ") || digits);
+        }}
+        className="w-full px-4 py-2 border rounded-md"
+      />
+      {errors.num && <p className="text-red-500 text-sm">{errors.num}</p>}
 
-          <button
-                type="button"
-                onClick={handleSendOtp}
-                disabled={!termsAccepted || resendTimer > 0}
-                className={`text-sm underline ${
-                  termsAccepted && resendTimer === 0 ? "bg-blue-500 text-white hover:text-blue-600" : "text-gray-400 cursor-not-allowed"
-                }`}
-              >
-                {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Send OTP"}
-              </button>
-              {otpSent && (
-                <input
-                  type="text"
-                  placeholder="Enter OTP"
-                  className="w-full px-4 py-2 border rounded-md"
-                  required
-                />
-              )}
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={termsAccepted}
-                  onChange={(e) => setTermsAccepted(e.target.checked)}
-                  className="w-4 h-4"
-                />
-                <span className="text-sm text-gray-700">I agree to the Terms and Conditions</span>
-              </label>
-              <a
-                href="#"
-                className="text-blue-500 text-sm hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View Terms and Conditions
-              </a>
-        </div>
-      );
-    }
+      {/* Expiry */}
+      <input
+        type="text"
+        placeholder="MM/YY"
+        maxLength={5}
+        value={exp}
+        onChange={e => {
+          const v = e.target.value.replace(/\D/g, "");
+          setExp(v.length > 2 ? `${v.slice(0,2)}/${v.slice(2,4)}` : v);
+        }}
+        className="w-full px-4 py-2 border rounded-md"
+      />
+      {errors.exp && <p className="text-red-500 text-sm">{errors.exp}</p>}
+
+      {/* Card Holder */}
+      <input
+        type="text"
+        placeholder="Cardholder Name"
+        value={holder}
+        onChange={e => setHolder(e.target.value)}
+        className="w-full px-4 py-2 border rounded-md"
+      />
+      {errors.holder && <p className="text-red-500 text-sm">{errors.holder}</p>}
+
+      {/* CVV */}
+      <input
+        type="text"
+        placeholder="CVV"
+        maxLength={4}
+        value={cvv}
+        onChange={e => setCvv(e.target.value.replace(/\D/g, ""))}
+        className="w-full px-4 py-2 border rounded-md"
+      />
+      {errors.cvv && <p className="text-red-500 text-sm">{errors.cvv}</p>}
+
+       <button
+        type="button"
+        onClick={() => {
+          if (checkErrors()) {
+          
+            handleSendOtp();
+          }
+        }}
+        className="w-full py-2 bg-blue-600 text-white rounded"
+      >
+        {resendTimer > 0 ? `Resend OTP (${resendTimer}s)` : "Send OTP"}
+      </button>
+      {handleSendOtp()&& <input type="text" placeholder="Enter OTP"></input>}
+
+    </div>
+  );
+   }
      if (id.startsWith("bank-")) {
       if (id === "bank-other") {
         return (
