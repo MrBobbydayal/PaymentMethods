@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PaymentMethods } from "./PaymentMethodList.jsx";
-import CardForm from "./card.jsx"
+
 
 function App() {
   return (

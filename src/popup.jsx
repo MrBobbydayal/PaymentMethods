@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import qr from "./assets/qr.png";
-import CardPaymentForm from './card.jsx'
+
 
 import axis from './assets/axis.png'
 import bob from './assets/bob.png'
@@ -113,13 +113,49 @@ export default function Modal({ onClose, id }) {
     }
     if (id.startsWith("card-")) {
       return (
-            <CardPaymentForm/>
-        // <div className="space-y-3">
-        //   <input type="text" placeholder="Card Number" className="w-full px-4 py-2 border rounded-md shadow-xl  hover:shadow-black hover:border-blue-800" required />
-        //   <input type="text" placeholder="Expiry Date (MM/YY)" className="w-full px-4 py-2 border rounded-md shadow-xl  hover:shadow-black hover:border-blue-800" required />
-        //   <input type="text" placeholder="Cardholder Name" className="w-full px-4 py-2 border rounded-md shadow-xl  hover:shadow-black hover:border-blue-800" required />
-        //   <input type="text" placeholder="CVV" className="w-full px-4 py-2 border rounded-md shadow-xl hover:shadow-black hover:border-blue-800" required />
-        // </div>
+        <div className="space-y-3">
+          <input type="text" placeholder="Card Number" className="w-full px-4 py-2 border rounded-md shadow-xl  hover:shadow-black hover:border-blue-800" required />
+          <input type="text" placeholder="Expiry Date (MM/YY)" className="w-full px-4 py-2 border rounded-md shadow-xl  hover:shadow-black hover:border-blue-800" required />
+          <input type="text" placeholder="Cardholder Name" className="w-full px-4 py-2 border rounded-md shadow-xl  hover:shadow-black hover:border-blue-800" required />
+          <input type="text" placeholder="CVV" className="w-full px-4 py-2 border rounded-md shadow-xl hover:shadow-black hover:border-blue-800" required />
+          
+
+          <button
+                type="button"
+                onClick={handleSendOtp}
+                disabled={!termsAccepted || resendTimer > 0}
+                className={`text-sm underline ${
+                  termsAccepted && resendTimer === 0 ? "bg-blue-500 text-white hover:text-blue-600" : "text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Send OTP"}
+              </button>
+              {otpSent && (
+                <input
+                  type="text"
+                  placeholder="Enter OTP"
+                  className="w-full px-4 py-2 border rounded-md"
+                  required
+                />
+              )}
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                <span className="text-sm text-gray-700">I agree to the Terms and Conditions</span>
+              </label>
+              <a
+                href="#"
+                className="text-blue-500 text-sm hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Terms and Conditions
+              </a>
+        </div>
       );
     }
      if (id.startsWith("bank-")) {
